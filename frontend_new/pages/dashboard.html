@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | RECORDS - Restaurant Management</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="header-left">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+            <a href="dashboard.html" class="header-brand">🍽️ RECORDS</a>
+            <nav class="header-nav">
+                <a href="dashboard.html" class="header-nav-item active">Dashboard</a>
+                <a href="orders.html" class="header-nav-item">Orders</a>
+                <a href="menu.html" class="header-nav-item">Menu</a>
+                <a href="tables.html" class="header-nav-item">Tables</a>
+                <a href="history.html" class="header-nav-item">History</a>
+                <a href="feedback.html" class="header-nav-item">Feedback</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="header-search">
+                <input type="text" placeholder="Search orders, menu items, customers...">
+                <span class="header-search-icon">🔍</span>
+            </div>
+            <div class="header-actions">
+                <a href="orders.html" class="header-btn">
+                    <span>📋</span> New Order
+                </a>
+                <div class="header-notifications">
+                    <button class="header-btn">🔔</button>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="header-profile" onclick="window.location.href='profile.html'">
+                    <img src="../assets/profile.jpg" alt="Profile" class="header-profile-img">
+                    <div class="header-profile-info">
+                        <div class="header-profile-name">Aalok Nikam</div>
+                        <div class="header-profile-role">Restaurant Manager</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="sidebar"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <div>
+                    <h2>Welcome to your Restaurant Dashboard, Aalok!</h2>
+                    <p>Here's an overview of your restaurant's performance today.</p>
+                </div>
+                <div id="liveClock" class="live-clock"></div>
+            </header>
+            
+            <!-- Key Metrics Dashboard -->
+            <section class="metrics-grid">
+                <div class="metric-card revenue">
+                    <div class="metric-icon">💰</div>
+                    <div class="metric-content">
+                        <h3 id="todayRevenue">$3,240</h3>
+                        <p>Today's Revenue</p>
+                        <span class="metric-change positive">+12.5%</span>
+                    </div>
+                </div>
+                
+                <div class="metric-card orders">
+                    <div class="metric-icon">🍽️</div>
+                    <div class="metric-content">
+                        <h3 id="restaurantOrders">47</h3>
+                        <p>Orders Today</p>
+                        <span class="metric-change positive">+8 from yesterday</span>
+                    </div>
+                </div>
+                
+                <div class="metric-card customers">
+                    <div class="metric-icon">👥</div>
+                    <div class="metric-content">
+                        <h3 id="activeCustomers">89</h3>
+                        <p>Customers Served</p>
+                        <span class="metric-change neutral">15 currently dining</span>
+                    </div>
+                </div>
+                
+                <div class="metric-card tables">
+                    <div class="metric-icon">🪑</div>
+                    <div class="metric-content">
+                        <h3 id="tableOccupancy">12/18</h3>
+                        <p>Tables Occupied</p>
+                        <span class="metric-change positive">67% occupancy</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts and Analytics -->
+            <section class="analytics-section">
+                <div class="chart-container">
+                    <div class="chart-card">
+                        <h3>Revenue Trend (7 Days)</h3>
+                        <div class="chart" id="revenueChart">
+                            <canvas id="revenueCanvas" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <h3>Table Status Overview</h3>
+                        <div class="room-status-chart">
+                            <div class="status-item">
+                                <div class="status-color available"></div>
+                                <span>Available (6)</span>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-color occupied"></div>
+                                <span>Occupied (12)</span>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-color reserved"></div>
+                                <span>Reserved (3)</span>
+                            </div>
+                            <div class="status-item">
+                                <div class="status-color maintenance"></div>
+                                <span>Cleaning (1)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Activities and Alerts -->
+            <section class="dashboard-lower">
+                <div class="activity-card">
+                    <h3>🔔 Recent Activities</h3>
+                    <div class="activity-list" id="recentActivities">
+                        <div class="activity-item">
+                            <div class="activity-time">2 min ago</div>
+                            <div class="activity-text">Order #1234 completed - Table 7</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-time">15 min ago</div>
+                            <div class="activity-text">New reservation - Table 12 for 6:30 PM</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-time">1 hour ago</div>
+                            <div class="activity-text">Menu item updated - Grilled Salmon</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-time">2 hours ago</div>
+                            <div class="activity-text">Staff check-in - Sarah Johnson</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alerts-card">
+                    <h3>⚠️ Alerts & Notifications</h3>
+                    <div class="alert-list" id="alertsList">
+                        <div class="alert-item urgent">
+                            <div class="alert-icon">🚨</div>
+                            <div class="alert-content">
+                                <strong>Urgent:</strong> Low stock - Chicken Breast
+                                <small>Only 5 portions left</small>
+                            </div>
+                        </div>
+                        <div class="alert-item warning">
+                            <div class="alert-icon">⚠️</div>
+                            <div class="alert-content">
+                                <strong>Warning:</strong> Order #1245 taking longer than usual
+                                <small>Table 5 - 25 minutes</small>
+                            </div>
+                        </div>
+                        <div class="alert-item info">
+                            <div class="alert-icon">ℹ️</div>
+                            <div class="alert-content">
+                                <strong>Info:</strong> Large party reservation tonight
+                                <small>Table 15 - 8 guests at 7:00 PM</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions-card">
+                    <h3>⚡ Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button class="quick-btn" onclick="window.location.href='orders.html'">
+                            📋 New Order
+                        </button>
+                        <button class="quick-btn" onclick="window.location.href='menu.html'">
+                            🍽️ Update Menu
+                        </button>
+                        <button class="quick-btn" onclick="window.location.href='tables.html'">
+                            🪑 Manage Tables
+                        </button>
+                        <button class="quick-btn" onclick="window.location.href='reservations.html'">
+                            📅 Reservations
+                        </button>
+                        <button class="quick-btn" onclick="window.location.href='reports.html'">
+                            📈 View Reports
+                        </button>
+                        <button class="quick-btn" onclick="window.location.href='staff.html'">
+                            👥 Staff Schedule
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Status -->
+            <section class="system-status">
+                <div class="status-card">
+                    <h3>🔧 System Status</h3>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <span>POS System:</span>
+                            <span id="posStatus" class="status-online">Online</span>
+                        </div>
+                        <div class="status-item">
+                            <span>Kitchen Display:</span>
+                            <span id="kitchenStatus" class="status-online">Connected</span>
+                        </div>
+                        <div class="status-item">
+                            <span>Payment Gateway:</span>
+                            <span id="paymentStatus" class="status-online">Active</span>
+                        </div>
+                        <div class="status-item">
+                            <span>Database:</span>
+                            <span id="dbStatus" class="status-online">Connected</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Load configuration first -->
+    <script src="../js/config.js"></script>
+    <!-- Load API functions -->
+    <script src="../js/api.js"></script>
+    <!-- Load main scripts -->
+    <script src="../js/scripts.js"></script>
+    
+    <script>
+        // Load sidebar and handle navigation
+        async function loadSidebar() {
+            try {
+                const response = await fetch('../components/sidebar.html');
+                const sidebarContent = await response.text();
+                document.getElementById('sidebar').innerHTML = sidebarContent;
+
+                // Initialize sidebar functionality
+                initializeSidebar();
+
+                // Set active navigation item
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(item => {
+                    if (item.getAttribute('href') === 'dashboard.html') {
+                        item.classList.add('active');
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading sidebar:', error);
+            }
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('show-mobile');
+        }
+
+        // Dashboard-specific initialization
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Load sidebar first
+            await loadSidebar();
+            
+            // Test API connection
+            try {
+                const menuItems = await getAllMenuItems();
+                document.getElementById('serverStatus').innerHTML = 'Server: <span class="status-online">Online</span>';
+                document.getElementById('dbStatus').innerHTML = 'Database: <span class="status-online">Connected</span>';
+                
+                // Load dashboard statistics
+                loadDashboardStats(menuItems);
+                drawRevenueChart();
+                startRealTimeUpdates();
+            } catch (error) {
+                console.error('Dashboard initialization error:', error);
+                document.getElementById('serverStatus').innerHTML = 'Server: <span class="status-offline">Offline</span>';
+                document.getElementById('dbStatus').innerHTML = 'Database: <span class="status-offline">Disconnected</span>';
+            }
+        });
+
+        function initializeSidebar() {
+            // Initialize sidebar popup functionality
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(navItem => {
+                const popup = navItem.parentElement.querySelector('.sidebar-popup');
+                if (!popup) return;
+                
+                navItem.addEventListener('mouseenter', function(e) {
+                    const rect = navItem.getBoundingClientRect();
+                    popup.style.top = rect.top + 'px';
+                    popup.classList.add('show');
+                });
+                
+                navItem.addEventListener('mouseleave', function() {
+                    popup.classList.remove('show');
+                });
+            });
+            
+            console.log('Sidebar initialized with popup navigation');
+        }
+        
+        function loadDashboardStats(menuItems) {
+            // Simulate real-time data updates
+            updateMetrics();
+        }
+
+        function updateMetrics() {
+            // Simulate dynamic data - in real app, this would fetch from API
+            const currentTime = new Date();
+            const hour = currentTime.getHours();
+            
+            // Dynamic revenue based on time of day (restaurant peak hours)
+            const baseRevenue = 3240;
+            const timeMultiplier = hour < 11 ? 0.6 : hour < 14 ? 1.3 : hour < 17 ? 0.8 : hour < 21 ? 1.4 : 0.5;
+            const revenue = Math.round(baseRevenue * timeMultiplier);
+            
+            document.getElementById('todayRevenue').textContent = `$${revenue.toLocaleString()}`;
+            
+            // Update restaurant-specific metrics
+            const orders = Math.floor(35 + Math.random() * 25);
+            document.getElementById('restaurantOrders').textContent = orders;
+            
+            const customers = Math.floor(70 + Math.random() * 30);
+            document.getElementById('activeCustomers').textContent = customers;
+            
+            // Table occupancy simulation
+            const totalTables = 18;
+            const occupiedTables = Math.floor(8 + Math.random() * 8);
+            const occupancyPercent = Math.round((occupiedTables / totalTables) * 100);
+            document.getElementById('tableOccupancy').textContent = `${occupiedTables}/${totalTables}`;
+            
+            // Update table occupancy percentage in the metric change
+            const tableMetric = document.querySelector('.metric-card.tables .metric-change');
+            if (tableMetric) {
+                tableMetric.textContent = `${occupancyPercent}% occupancy`;
+            }
+        }
+
+        function drawRevenueChart() {
+            const canvas = document.getElementById('revenueCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Sample revenue data for the last 7 days
+            const data = [2800, 3200, 2950, 3400, 3100, 3350, 3240];
+            const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Chart styling
+            const padding = 40;
+            const chartWidth = canvas.width - (padding * 2);
+            const chartHeight = canvas.height - (padding * 2);
+            const maxValue = Math.max(...data) * 1.1;
+            
+            // Draw grid lines
+            ctx.strokeStyle = '#e9ecef';
+            ctx.lineWidth = 1;
+            
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (chartHeight / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(padding + chartWidth, y);
+                ctx.stroke();
+            }
+            
+            // Draw line chart
+            ctx.strokeStyle = '#007bff';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            data.forEach((value, index) => {
+                const x = padding + (chartWidth / (data.length - 1)) * index;
+                const y = padding + chartHeight - (value / maxValue) * chartHeight;
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+                
+                // Draw data points
+                ctx.fillStyle = '#007bff';
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+            
+            ctx.stroke();
+            
+            // Draw labels
+            ctx.fillStyle = '#6c757d';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            
+            labels.forEach((label, index) => {
+                const x = padding + (chartWidth / (data.length - 1)) * index;
+                ctx.fillText(label, x, canvas.height - 10);
+            });
+            
+            // Draw y-axis labels
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 5; i++) {
+                const value = Math.round((maxValue / 5) * (5 - i));
+                const y = padding + (chartHeight / 5) * i + 5;
+                ctx.fillText(`$${value}`, padding - 10, y);
+            }
+        }
+
+        function startRealTimeUpdates() {
+            // Update metrics every 30 seconds
+            setInterval(() => {
+                updateMetrics();
+                addRandomActivity();
+            }, 30000);
+            
+            // Update time every second
+            setInterval(updateClock, 1000);
+            updateClock();
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            const dateString = now.toLocaleDateString();
+            
+            const clockElement = document.getElementById('liveClock');
+            if (clockElement) {
+                clockElement.innerHTML = `${timeString}<br><small>${dateString}</small>`;
+            }
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('show-mobile');
+        }
+
+        function addRandomActivity() {
+            const activities = [
+                'Order #' + Math.floor(1000 + Math.random() * 9000) + ' completed - Table ' + Math.floor(1 + Math.random() * 18),
+                'New table reservation for ' + (Math.floor(Math.random() * 12) + 1) + ' guests',
+                'Menu item updated - ' + ['Grilled Salmon', 'Pasta Carbonara', 'Caesar Salad', 'Beef Steak'][Math.floor(Math.random() * 4)],
+                'Payment processed - $' + Math.floor(25 + Math.random() * 200),
+                'Staff member clocked in - ' + ['Sarah', 'Mike', 'Emma', 'David'][Math.floor(Math.random() * 4)],
+                'Kitchen completed order for Table ' + Math.floor(1 + Math.random() * 18),
+                'Customer feedback received - ' + ['5 stars', '4 stars', 'Excellent service'][Math.floor(Math.random() * 3)],
+                'Inventory restocked - ' + ['Fresh vegetables', 'Premium beef', 'Wine selection'][Math.floor(Math.random() * 3)],
+                'Table ' + Math.floor(1 + Math.random() * 18) + ' seated new customers',
+                'Special dietary request handled for Table ' + Math.floor(1 + Math.random() * 18)
+            ];
+            
+            const activity = activities[Math.floor(Math.random() * activities.length)];
+            const activityList = document.getElementById('recentActivities');
+            
+            const newActivity = document.createElement('div');
+            newActivity.className = 'activity-item';
+            newActivity.innerHTML = `
+                <div class="activity-time">Just now</div>
+                <div class="activity-text">${activity}</div>
+            `;
+            
+            activityList.insertBefore(newActivity, activityList.firstChild);
+            
+            // Keep only last 5 activities
+            while (activityList.children.length > 5) {
+                activityList.removeChild(activityList.lastChild);
+            }
+        }
+    </script>
+</body>
+</html>

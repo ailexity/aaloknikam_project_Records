@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders Management | RECORDS - Restaurant Management</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        /* Header Controls */
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .header-actions-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .header-search-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-primary, .btn-secondary, .btn-danger {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .search-input, .filter-select {
+            padding: 10px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input {
+            width: 250px;
+        }
+
+        .search-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        /* Statistics Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 0;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            color: #007bff;
+        }
+
+
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .stats-section {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+                padding: 0.8rem;
+            }
+            
+            .stat-item {
+                padding: 0.8rem;
+            }
+            
+            .stat-value {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .header-controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .search-filter-section {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .filter-select, .tax-select {
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-select:focus, .tax-select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn-primary, .btn-secondary, .btn-danger {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        /* Enhanced Order Cards */
+        .orders-section {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .section-count {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .order-cards-container {
+            background: white;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 200px;
+        }
+
+        .order-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        .order-card, .enhanced-order-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.08);
+        }
+
+        .order-card:hover, .enhanced-order-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.15);
+            border-color: #007bff;
+        }
+
+        .order-card-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            position: relative;
+        }
+
+        .order-card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+        }
+
+        .order-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .order-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .order-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .status-preparing {
+            background: #e1f5fe;
+            color: #0277bd;
+            border: 1px solid #81d4fa;
+        }
+
+        .status-ready {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+
+        .status-completed {
+            background: #f3e5f5;
+            color: #7b1fa2;
+            border: 1px solid #ce93d8;
+        }
+
+        .order-body {
+            padding: 1rem;
+        }
+
+        .order-items-list {
+            margin-bottom: 1rem;
+        }
+
+        .enhanced-order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .enhanced-order-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .item-price {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .item-quantity {
+            background: #f8f9fa;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-right: 0.5rem;
+        }
+
+        .item-total {
+            font-weight: 600;
+            color: #28a745;
+        }
+
+        .order-summary {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .summary-row.total {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #333;
+            border-top: 1px solid #dee2e6;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .order-actions {
+            padding: 1rem;
+            background: #f8f9fa;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .order-actions button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-update-status {
+            background: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+        }
+
+        .btn-update-status:hover {
+            background: #0056b3;
+            border-color: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .btn-mark-paid {
+            background: #28a745;
+            color: white;
+            border: 1px solid #28a745;
+        }
+
+        .btn-mark-paid:hover {
+            background: #218838;
+            border-color: #218838;
+            transform: translateY(-1px);
+        }
+
+        .btn-edit {
+            background: #17a2b8;
+            color: white;
+            border: 1px solid #17a2b8;
+        }
+
+        .btn-edit:hover {
+            background: #138496;
+            border-color: #138496;
+            transform: translateY(-1px);
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            border: 1px solid #dc3545;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+            border-color: #c82333;
+            transform: translateY(-1px);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6c757d;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            margin: 1rem;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.6;
+            color: #007bff;
+        }
+
+        .empty-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #495057;
+        }
+
+        .empty-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .order-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-container {
+                min-width: auto;
+            }
+
+            .action-buttons {
+                justify-content: stretch;
+                flex-direction: column;
+            }
+
+            .order-cards {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .order-card, .enhanced-order-card {
+                min-width: auto;
+            }
+        }
+    </style>
+    <style>
+        .container {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f4f7fc;
+            padding-top: 60px;
+            padding-left: 0;
+            padding-right: 0;
+            padding-bottom: 0;
+            margin: 0;
+            position: relative;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 0;
+            margin-left: 80px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        header h2 {
+            margin: 0;
+            color: #007bff;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        #addOrder, #resetOrderCount {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #addOrder:hover, #resetOrderCount:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .search-container input {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            width: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .search-container input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+            outline: none;
+        }
+
+        .search-container input::placeholder {
+            color: #999;
+        }
+
+        .order-count {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f0f2f5;
+            border-radius: 8px;
+            color: #007bff;
+            font-weight: 500;
+        }
+
+        .order-count span {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .tax-settings {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem 0.75rem;
+            background: #f0f2f5;
+            border-radius: 8px;
+            color: #007bff;
+            font-weight: 500;
+        }
+
+        .tax-settings select {
+            padding: 0.25rem;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            color: #007bff;
+        }
+
+        .tax-discount-section {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .tax-input, .discount-input {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tax-input input, .discount-input input {
+            width: 70px;
+            padding: 0.25rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .orders-section {
+            background: transparent;
+            padding: 0;
+            margin-top: 0;
+        }
+
+
+
+
+
+        .order-header {
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .order-header h4 {
+            margin: 0 0 0.25rem 0;
+            color: #007bff;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .order-header p {
+            color: #666;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .order-header input {
+            margin: 0.25rem 0;
+            padding: 0.5rem;
+            width: calc(100% - 1rem);
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .order-header input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+            outline: none;
+        }
+
+        .item-selection {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            flex-wrap: wrap;
+        }
+
+        .item-selection select {
+            flex: 2;
+            min-width: 150px;
+        }
+
+        .item-selection .item-quantity {
+            flex: 0 0 60px;
+            min-width: 60px;
+        }
+
+        .add-item {
+            flex: 0 0 auto;
+            white-space: nowrap;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .add-item:hover {
+            background-color: #0056b3;
+        }
+
+        .selected-item,
+        .ordered-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            margin: 0.25rem 0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: #f8f9fa;
+            border-left: 3px solid #007bff;
+        }
+
+        .selected-item:hover,
+        .ordered-item:hover {
+            background: #f0f2f5;
+        }
+
+        .order-summary {
+            margin: 0.75rem 0;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: #f8f9fa;
+            color: #007bff;
+            font-weight: 500;
+            border: 1px solid #e0e0e0;
+        }
+
+        .order-summary p {
+            margin: 0.25rem 0;
+        }
+
+        .order-summary .total {
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #e0e0e0;
+            font-weight: 600;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .order-actions button {
+            flex: 1;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .save-order,
+        .complete-order {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .save-order:hover,
+        .complete-order:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .mark-paid {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .mark-paid:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .cancel-order {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .cancel-order:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .remove-item {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .remove-item:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 0;
+            }
+
+            .orders-section {
+                padding: 0;
+            }
+
+            header {
+                margin-top: 10px;
+                margin-bottom: 10px;
+                padding-bottom: 0.5rem;
+            }
+
+            .header-controls {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .header-actions-group {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .header-search-group {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .btn-primary, .btn-secondary, .btn-danger {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+
+            .order-cards {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .order-card {
+                min-width: 100%;
+            }
+
+            .item-selection {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .item-selection select,
+            .item-selection .item-quantity,
+            .add-item {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="header-left">
+            <a href="dashboard.html" class="header-brand">🍽️ RECORDS</a>
+            <nav class="header-nav">
+                <a href="dashboard.html" class="header-nav-item">Dashboard</a>
+                <a href="orders.html" class="header-nav-item active">Orders</a>
+                <a href="menu.html" class="header-nav-item">Menu</a>
+                <a href="tables.html" class="header-nav-item">Tables</a>
+                <a href="history.html" class="header-nav-item">History</a>
+                <a href="feedback.html" class="header-nav-item">Feedback</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="header-search">
+                <input type="text" placeholder="Search orders, customers...">
+                <span class="header-search-icon">🔍</span>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" onclick="createNewOrder()">
+                    <span>📋</span> New Order
+                </button>
+                <div class="header-notifications">
+                    <button class="header-btn">🔔</button>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="header-profile" onclick="window.location.href='profile.html'">
+                    <img src="../assets/profile.jpg" alt="Profile" class="header-profile-img">
+                    <div class="header-profile-info">
+                        <div class="header-profile-name">Aalok Nikam</div>
+                        <div class="header-profile-role">Restaurant Manager</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="sidebar"></div>
+        <main class="main-content">
+            <header>
+                <div>
+                    <h2>🛎️ Order Management</h2>
+                    <p>Manage restaurant orders, track status, and process payments</p>
+                </div>
+                <div class="header-controls">
+                    <div class="header-actions-group">
+                        <button id="addOrder" class="btn-primary">+ New Order</button>
+                        <button id="resetOrderCount" class="btn-danger">🗑️ Reset Count</button>
+                        <button id="defaultTaxBtn" class="btn-secondary">🧾 Tax Settings</button>
+                    </div>
+                    <div class="header-search-group">
+                        <input type="search" placeholder="Search orders..." id="searchOrders" class="search-input">
+                        <select id="statusFilter" class="filter-select">
+                            <option value="all">All Orders</option>
+                            <option value="pending">Pending</option>
+                            <option value="preparing">Preparing</option>
+                            <option value="ready">Ready</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Statistics Section -->
+            <div class="stats-section">
+                <div class="stat-item">
+                    <span class="stat-label">Today's Orders</span>
+                    <span class="stat-value" id="dailyOrderCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Active Orders</span>
+                    <span class="stat-value" id="activeOrderCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Revenue Today</span>
+                    <span class="stat-value" id="todayRevenue">$0.00</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Average Order Value</span>
+                    <span class="stat-value" id="avgOrderValue">$0.00</span>
+                </div>
+            </div>
+            
+            <section class="orders-section">
+                <div class="active-orders">
+                    <div class="section-header">
+                        <h3 class="section-title">🛎️ Active Orders</h3>
+                        <div class="section-count" id="activeOrdersCount">0 orders</div>
+                    </div>
+                    <div class="order-cards-container">
+                        <div class="order-cards" id="activeOrdersContainer">
+                            <!-- Active orders will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
+
+            </section>
+        </main>
+    </div>
+
+    <!-- Order Form Template -->
+    <template id="orderFormTemplate">
+        <div class="order-card new-order">
+            <div class="order-header">
+                <input type="text" class="table-number" placeholder="Table Number" required>
+                <input type="text" class="customer-name" placeholder="Customer Name" required>
+                <div class="tax-discount-section">
+                    <div class="tax-input">
+                        <label>Tax (%): </label>
+                        <input type="number" class="tax-rate" min="0" max="100" step="0.1">
+                    </div>
+                    <div class="discount-input">
+                        <label>Discount (%): </label>
+                        <input type="number" class="discount-rate" min="0" max="100" step="0.1" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="order-items">
+                <h4>Order Items</h4>
+                <div class="item-selection">
+                    <select class="item-select">
+                        <option value="">Select an item</option>
+                    </select>
+                    <input type="number" class="item-quantity" min="1" value="1">
+                    <button class="add-item">Add</button>
+                </div>
+                <div class="selected-items">
+                    <!-- Selected items will appear here -->
+                </div>
+            </div>
+            <div class="order-summary">
+                <p>Subtotal: $<span class="subtotal-amount">0.00</span></p>
+                <p>Tax Amount: $<span class="tax-amount">0.00</span></p>
+                <p>Discount: $<span class="discount-amount">0.00</span></p>
+                <p class="total">Total Amount: $<span class="total-amount">0.00</span></p>
+            </div>
+            <div class="order-actions">
+                <button class="save-order">Place Order</button>
+                <button class="cancel-order">Cancel</button>
+            </div>
+        </div>
+    </template>
+
+    <script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/scripts.js"></script>
+    <script>
+        let menuItems = []; // Store menu items globally
+        let customerCounter = 1; // Counter for customer numbering
+        let tableCounter = 1; // Counter for table numbering
+        let dailyOrderCount = 0; // Counter for daily orders
+        let defaultTaxRate = 0;
+
+        // Load daily order count from localStorage or initialize to 0
+        function initializeDailyCount() {
+            const today = new Date().toLocaleDateString();
+            const savedData = localStorage.getItem('dailyOrderCount');
+            
+            if (savedData) {
+                const { date, count } = JSON.parse(savedData);
+                if (date === today) {
+                    dailyOrderCount = count;
+                } else {
+                    dailyOrderCount = 0;
+                }
+            } else {
+                dailyOrderCount = 0;
+            }
+            
+            updateDailyCountDisplay();
+        }
+
+        // Update the daily count display
+        function updateDailyCountDisplay() {
+            document.getElementById('dailyOrderCount').textContent = dailyOrderCount;
+        }
+
+        // Save daily count to localStorage
+        function saveDailyCount() {
+            const today = new Date().toLocaleDateString();
+            localStorage.setItem('dailyOrderCount', JSON.stringify({
+                date: today,
+                count: dailyOrderCount
+            }));
+        }
+
+        // Increment daily order count
+        function incrementDailyCount() {
+            dailyOrderCount++;
+            updateDailyCountDisplay();
+            saveDailyCount();
+        }
+
+        // Load sidebar and handle navigation
+        async function loadSidebar() {
+            try {
+                const response = await fetch('../components/sidebar.html');
+                const sidebarContent = await response.text();
+                document.getElementById('sidebar').innerHTML = sidebarContent;
+
+                // Initialize sidebar functionality
+                initializeSidebar();
+
+                // Set active navigation item
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(item => {
+                    if (item.getAttribute('href') === 'orders.html') {
+                        item.classList.add('active');
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading sidebar:', error);
+            }
+        }
+
+        // Initialize sidebar functionality (same as other pages)
+        function initializeSidebar() {
+            // Initialize sidebar popup functionality
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(navItem => {
+                const popup = navItem.parentElement.querySelector('.sidebar-popup');
+                if (!popup) return;
+                
+                navItem.addEventListener('mouseenter', function(e) {
+                    const rect = navItem.getBoundingClientRect();
+                    popup.style.top = rect.top + 'px';
+                    popup.classList.add('show');
+                });
+                
+                navItem.addEventListener('mouseleave', function() {
+                    popup.classList.remove('show');
+                });
+            });
+            
+            console.log('Sidebar initialized with popup navigation');
+        }
+
+        // Load menu items and active orders when page loads
+        async function initialize() {
+            try {
+                // Load sidebar first
+                await loadSidebar();
+                
+                // Load menu items
+                menuItems = await window.api.getAllMenuItems();
+                console.log('Menu items loaded:', menuItems);
+                
+                // Load active orders and update counters
+                await loadActiveOrders();
+                
+                // Add event listeners for header buttons
+                document.getElementById('addOrder').addEventListener('click', createNewOrder);
+                document.getElementById('resetOrderCount').addEventListener('click', resetOrderCount);
+                document.getElementById('defaultTaxBtn').addEventListener('click', showTaxSettings);
+                
+                // Setup search functionality
+                setupSearch();
+                
+                initializeDailyCount(); // Initialize the daily count
+                updateAverageOrderValue(); // Initialize average order value
+                loadDefaultTaxRate(); // Load default tax rate
+                console.log('Initialization complete');
+            } catch (error) {
+                console.error('Error initializing page:', error);
+                alert('Error loading menu items. Please try again.');
+            }
+        }
+
+        // Calculate and update average order value
+        function updateAverageOrderValue() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const completedOrders = orders.filter(order => order.status === 'completed');
+            
+            if (completedOrders.length > 0) {
+                const totalRevenue = completedOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+                const avgValue = totalRevenue / completedOrders.length;
+                document.getElementById('avgOrderValue').textContent = `$${avgValue.toFixed(2)}`;
+            } else {
+                document.getElementById('avgOrderValue').textContent = '$0.00';
+            }
+        }
+
+        // Reset order count function
+        function resetOrderCount() {
+            const confirmation = confirm('Are you sure you want to reset the daily order count to 0?\n\nThis will reset the "Today\'s Orders" counter but will not delete any actual orders.');
+            
+            if (confirmation) {
+                dailyOrderCount = 0;
+                updateDailyCountDisplay();
+                saveDailyCount();
+                alert('Daily order count has been reset to 0.');
+            }
+        }
+
+        // Show tax settings modal
+        function showTaxSettings() {
+            const currentTax = defaultTaxRate;
+            const newTax = prompt(`Current Default Tax Rate: ${currentTax}%\n\nEnter new default tax rate (0-100):`, currentTax);
+            
+            if (newTax !== null && !isNaN(newTax) && newTax >= 0 && newTax <= 100) {
+                defaultTaxRate = parseFloat(newTax);
+                localStorage.setItem('defaultTaxRate', defaultTaxRate);
+                alert(`Default tax rate updated to ${defaultTaxRate}%`);
+            } else if (newTax !== null) {
+                alert('Please enter a valid tax rate between 0 and 100.');
+            }
+        }
+
+        // Load default tax rate from localStorage
+        function loadDefaultTaxRate() {
+            const savedTaxRate = localStorage.getItem('defaultTaxRate');
+            if (savedTaxRate) {
+                defaultTaxRate = parseFloat(savedTaxRate);
+            }
+        }
+
+        // Create new order form
+        function createNewOrder() {
+            const template = document.getElementById('orderFormTemplate');
+            const orderCards = document.querySelector('.order-cards');
+            const newOrder = document.importNode(template.content, true);
+            
+            // Auto-fill customer and table numbers
+            const tableInput = newOrder.querySelector('.table-number');
+            const customerInput = newOrder.querySelector('.customer-name');
+            
+            tableInput.value = `Table ${tableCounter}`;
+            customerInput.value = `Customer ${customerCounter}`;
+            
+            // Increment counters
+            tableCounter++;
+            customerCounter++;
+            
+            // Populate menu items in select
+            const select = newOrder.querySelector('.item-select');
+            menuItems.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = `${item.name} - $${item.price.toFixed(2)}`;
+                select.appendChild(option);
+            });
+
+            // Add event listeners
+            attachNewOrderHandlers(newOrder.querySelector('.order-card'));
+            
+            // Insert the new order form
+            orderCards.insertBefore(newOrder, orderCards.firstChild);
+
+            // Trigger search to ensure the new order is properly filtered
+            const searchInput = document.getElementById('searchOrders');
+            if (searchInput.value) {
+                filterOrders(searchInput.value.toLowerCase().trim());
+            }
+        }
+
+        // Load active orders
+        async function loadActiveOrders() {
+            try {
+                const orders = await window.api.getAllOrders();
+                const orderCards = document.querySelector('.order-cards');
+                orderCards.innerHTML = '';
+
+                // Reset counters to 1 if no orders exist
+                if (!orders || orders.length === 0) {
+                    tableCounter = 1;
+                    customerCounter = 1;
+                    return;
+                }
+
+                // Get active orders
+                const activeOrders = orders.filter(order => order.status === 'pending');
+
+                // Reset counters to 1 if no active orders
+                if (activeOrders.length === 0) {
+                    tableCounter = 1;
+                    customerCounter = 1;
+                    return;
+                }
+
+                // Get the highest customer and table numbers from existing active orders
+                activeOrders.forEach(order => {
+                    const tableNum = parseInt(order.tableNumber.replace('Table ', '')) || 0;
+                    const customerNum = parseInt(order.customerName.replace('Customer ', '')) || 0;
+                    
+                    tableCounter = Math.max(tableCounter, tableNum + 1);
+                    customerCounter = Math.max(customerCounter, customerNum + 1);
+                });
+
+                // Display active orders
+                activeOrders.forEach(order => {
+                    if (order.tableNumber === 'Table 1' && order.customerName === 'Customer 1') {
+                        return;
+                    }
+
+                    const card = createOrderCard(order);
+                    orderCards.appendChild(card);
+                });
+
+                // Trigger search to ensure orders are properly filtered
+                const searchInput = document.getElementById('searchOrders');
+                if (searchInput.value) {
+                    filterOrders(searchInput.value.toLowerCase().trim());
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                alert('Error loading orders. Please try again.');
+            }
+        }
+
+        // Create order card from existing order
+        function createOrderCard(order) {
+            console.log('Creating card with order data:', order);
+            const card = document.createElement('div');
+            card.classList.add('order-card');
+            card.dataset.id = order.id;
+
+            const items = order.items.map(item => {
+                // Handle both populated and non-populated menuItem references
+                const menuItemName = item.menuItem && typeof item.menuItem === 'object' 
+                    ? item.menuItem.name 
+                    : (menuItems.find(m => m.id === item.menuItem) || {}).name || 'Unknown Item';
+                
+                return `
+                    <div class="ordered-item">
+                        <span>${menuItemName}</span>
+                        <span>x${item.quantity}</span>
+                        <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                `;
+            }).join('');
+
+            // Get values from order object, fallback to calculations if not present
+            const subtotal = order.subtotal || order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const taxRate = order.taxRate || defaultTaxRate;
+            const discountRate = order.discountRate || 0;
+            const taxAmount = order.taxAmount || (subtotal * (taxRate / 100));
+            const discountAmount = order.discountAmount || (subtotal * (discountRate / 100));
+            const total = order.totalAmount || (subtotal + taxAmount - discountAmount);
+
+            console.log('Card amounts:', {
+                subtotal,
+                taxRate,
+                discountRate,
+                taxAmount,
+                discountAmount,
+                total
+            });
+
+            card.innerHTML = `
+                <div class="order-header">
+                    <h4>Table ${order.tableNumber}</h4>
+                    <p>Customer: ${order.customerName}</p>
+                    <div class="rates-display" style="margin-top: 0.5rem; display: flex; gap: 1rem;">
+                        ${taxRate > 0 ? `<span style="color: #007bff; font-weight: 500;">Tax Rate: ${taxRate}%</span>` : ''}
+                        ${discountRate > 0 ? `<span style="color: #dc3545; font-weight: 500;">Discount Rate: ${discountRate}%</span>` : ''}
+                    </div>
+                </div>
+                <div class="order-items">
+                    ${items}
+                </div>
+                <div class="order-summary">
+                    <p>Subtotal: $<span class="subtotal-amount">${subtotal.toFixed(2)}</span></p>
+                    <p>Tax Amount: $<span class="tax-amount">${taxAmount.toFixed(2)}</span></p>
+                    <p>Discount: $<span class="discount-amount">${discountAmount.toFixed(2)}</span></p>
+                    <p class="total">Total Amount: $<span class="total-amount">${total.toFixed(2)}</span></p>
+                </div>
+                <div class="order-actions">
+                    <button class="complete-order">Mark Complete</button>
+                    <button class="mark-paid">${order.paymentStatus === 'paid' ? 'Paid ✓' : 'Mark Paid'}</button>
+                    <button class="cancel-order">Cancel Order</button>
+                    <button class="edit-order">Edit Order</button>
+                </div>
+            `;
+
+            // Update mark paid button if already paid
+            const markPaidBtn = card.querySelector('.mark-paid');
+            if (order.paymentStatus === 'paid') {
+                markPaidBtn.style.backgroundColor = '#6c757d';
+                markPaidBtn.disabled = true;
+            }
+
+            attachOrderActions(card, order);
+            return card;
+        }
+
+        // Attach handlers to new order form
+        function attachNewOrderHandlers(orderElement) {
+            const addItemBtn = orderElement.querySelector('.add-item');
+            const saveOrderBtn = orderElement.querySelector('.save-order');
+            const cancelOrderBtn = orderElement.querySelector('.cancel-order');
+            const selectedItems = orderElement.querySelector('.selected-items');
+            const taxInput = orderElement.querySelector('.tax-rate');
+            const discountInput = orderElement.querySelector('.discount-rate');
+
+            // Set default tax rate
+            taxInput.value = defaultTaxRate;
+            
+            // Add tax and discount input handlers
+            taxInput.addEventListener('input', () => {
+                console.log('Tax changed:', taxInput.value);
+                updateTotal(orderElement);
+            });
+            
+            discountInput.addEventListener('input', () => {
+                console.log('Discount changed:', discountInput.value);
+                updateTotal(orderElement);
+            });
+            
+            // Add item to order
+            addItemBtn.addEventListener('click', () => {
+                const select = orderElement.querySelector('.item-select');
+                const quantity = orderElement.querySelector('.item-quantity');
+                
+                if (!select.value) {
+                    alert('Please select an item first');
+                    return;
+                }
+
+                const selectedItem = menuItems.find(item => item.id === select.value);
+                
+                if (selectedItem && quantity.value > 0) {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('selected-item');
+                    itemDiv.innerHTML = `
+                        <span>${selectedItem.name}</span>
+                        <span>x${quantity.value}</span>
+                        <span>$${(selectedItem.price * quantity.value).toFixed(2)}</span>
+                        <button class="remove-item">Remove</button>
+                    `;
+                    
+                    itemDiv.querySelector('.remove-item').addEventListener('click', () => {
+                        itemDiv.remove();
+                        updateTotal(orderElement);
+                    });
+                    
+                    selectedItems.appendChild(itemDiv);
+                    updateTotal(orderElement);
+                    
+                    // Reset selection
+                    select.value = '';
+                    quantity.value = '1';
+                } else {
+                    alert('Please select a valid item and enter a quantity greater than 0');
+                }
+            });
+
+            // Save order
+            saveOrderBtn.addEventListener('click', async () => {
+                const tableNumber = orderElement.querySelector('.table-number').value;
+                const customerName = orderElement.querySelector('.customer-name').value;
+                const selectedItemsDiv = orderElement.querySelectorAll('.selected-item');
+                
+                if (!tableNumber || !customerName || selectedItemsDiv.length === 0) {
+                    alert('Please fill in all fields and add at least one item.');
+                    return;
+                }
+
+                try {
+                    const items = Array.from(selectedItemsDiv).map(itemDiv => {
+                        const name = itemDiv.querySelector('span').textContent;
+                        const quantity = parseInt(itemDiv.querySelector('span:nth-child(2)').textContent.substring(1));
+                        const menuItem = menuItems.find(item => item.name === name);
+                        
+                        return {
+                            menuItem: menuItem.id,
+                            quantity: quantity,
+                            price: menuItem.price
+                        };
+                    });
+
+                    // Get current values from the form
+                    const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                    const taxRate = parseFloat(orderElement.querySelector('.tax-rate').value || defaultTaxRate);
+                    const discountRate = parseFloat(orderElement.querySelector('.discount-rate').value || 0);
+                    const taxAmount = subtotal * (taxRate / 100);
+                    const discountAmount = subtotal * (discountRate / 100);
+                    const totalAmount = subtotal + taxAmount - discountAmount;
+
+                    // Create order with only required fields
+                    const orderData = {
+                        tableNumber,
+                        customerName,
+                        items,
+                        totalAmount,
+                        status: 'pending'
+                    };
+
+                    console.log('Creating order with data:', orderData);
+                    const result = await window.api.createOrder(orderData);
+                    console.log('Order creation result:', result);
+                    const order = result.data;
+
+                    // Replace the form with the new order card
+                    const card = createOrderCard(order);
+                    orderElement.parentNode.replaceChild(card, orderElement);
+                } catch (error) {
+                    console.error('Error creating order:', error);
+                    console.error('Error message:', error.message);
+                    console.error('Error stack:', error.stack);
+                    alert(`Error creating order: ${error.message}. Please check console for details.`);
+                }
+            });
+
+            // Cancel order creation
+            cancelOrderBtn.addEventListener('click', () => {
+                orderElement.remove();
+            });
+        }
+
+        // Update total amount
+        function updateTotal(orderElement) {
+            const selectedItems = orderElement.querySelectorAll('.selected-item, .ordered-item');
+            let subtotal = 0;
+
+            selectedItems.forEach(item => {
+                const name = item.querySelector('span').textContent;
+                const quantity = parseInt(item.querySelector('span:nth-child(2)').textContent.substring(1));
+                const menuItem = menuItems.find(item => item.name === name);
+                if (menuItem) {
+                    subtotal += menuItem.price * quantity;
+                }
+            });
+
+            // Format subtotal to 2 decimal places and parse back to float
+            subtotal = parseFloat(subtotal.toFixed(2));
+            
+            // Get tax and discount rates
+            const taxRate = parseFloat(orderElement.querySelector('.tax-rate')?.value || defaultTaxRate);
+            const discountRate = parseFloat(orderElement.querySelector('.discount-rate')?.value || 0);
+
+            console.log('Calculating totals:', { subtotal, taxRate, discountRate });
+
+            // Calculate tax and discount amounts with proper precision
+            const taxAmount = parseFloat((subtotal * (taxRate / 100)).toFixed(2));
+            const discountAmount = parseFloat((subtotal * (discountRate / 100)).toFixed(2));
+            
+            // Calculate total with proper precision
+            const total = parseFloat((subtotal + taxAmount - discountAmount).toFixed(2));
+
+            console.log('Final amounts:', { subtotal, taxAmount, discountAmount, total });
+
+            // Update display
+            orderElement.querySelector('.subtotal-amount').textContent = subtotal.toFixed(2);
+            orderElement.querySelector('.tax-amount').textContent = taxAmount.toFixed(2);
+            orderElement.querySelector('.discount-amount').textContent = discountAmount.toFixed(2);
+            orderElement.querySelector('.total-amount').textContent = total.toFixed(2);
+        }
+
+        // Attach actions to existing order cards
+        function attachOrderActions(card, order) {
+            const completeBtn = card.querySelector('.complete-order');
+            const markPaidBtn = card.querySelector('.mark-paid');
+            const cancelBtn = card.querySelector('.cancel-order');
+            const editBtn = card.querySelector('.edit-order');
+
+            completeBtn.addEventListener('click', async () => {
+                try {
+                    await window.api.updateOrder(card.dataset.id, { status: 'completed' });
+                    
+                    console.log('Order completed:', order.id);
+                    
+                    card.remove();
+                    incrementDailyCount();
+                } catch (error) {
+                    console.error('Error completing order:', error);
+                    alert('Error completing order. Please try again.');
+                }
+            });
+
+            markPaidBtn.addEventListener('click', async () => {
+                try {
+                    await window.api.updateOrder(card.dataset.id, { paymentStatus: 'paid' });
+                    
+                    // Update the button to show paid status
+                    markPaidBtn.textContent = 'Paid ✓';
+                    markPaidBtn.style.backgroundColor = '#6c757d';
+                    markPaidBtn.disabled = true;
+                    
+                    // Update order object
+                    order.paymentStatus = 'paid';
+                    
+                    console.log('Order marked as paid:', order.id);
+                } catch (error) {
+                    console.error('Error marking order as paid:', error);
+                    alert('Error marking order as paid. Please try again.');
+                }
+            });
+
+            cancelBtn.addEventListener('click', async () => {
+                if (confirm('Are you sure you want to cancel this order?')) {
+                    try {
+                        await window.api.updateOrder(card.dataset.id, { status: 'cancelled' });
+                        card.remove();
+                    } catch (error) {
+                        console.error('Error cancelling order:', error);
+                        alert('Error cancelling order. Please try again.');
+                    }
+                }
+            });
+
+            editBtn.addEventListener('click', () => {
+                // Skip editing the specific order you want to remove
+                if (order.tableNumber === 'Table 1' && order.customerName === 'Customer 1') {
+                    return;
+                }
+
+                console.log('Edit button clicked for order:', order); // Debugging statement
+                // Create a new order form using the template
+                const template = document.getElementById('orderFormTemplate');
+                const newOrderForm = document.importNode(template.content, true);
+                const orderElement = newOrderForm.querySelector('.order-card');
+
+                // Populate the form with existing order data
+                orderElement.querySelector('.table-number').value = `Table ${order.tableNumber}`;
+                orderElement.querySelector('.customer-name').value = order.customerName;
+                orderElement.querySelector('.tax-rate').value = order.taxRate;
+                orderElement.querySelector('.discount-rate').value = order.discountRate;
+
+                console.log('Populating form with data:', {
+                    tableNumber: order.tableNumber,
+                    customerName: order.customerName,
+                    taxRate: order.taxRate,
+                    discountRate: order.discountRate
+                }); // Debugging statement
+
+                const selectedItemsContainer = orderElement.querySelector('.selected-items');
+                order.items.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('selected-item');
+                    itemDiv.innerHTML = `
+                        <span>${item.menuItem.name}</span>
+                        <span>x${item.quantity}</span>
+                        <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                        <button class="remove-item">Remove</button>
+                    `;
+                    itemDiv.querySelector('.remove-item').addEventListener('click', () => {
+                        itemDiv.remove();
+                        updateTotal(orderElement);
+                    });
+                    selectedItemsContainer.appendChild(itemDiv);
+                });
+
+                // Populate the dropdown with menu items
+                const select = orderElement.querySelector('.item-select');
+                menuItems.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = `${item.name} - $${item.price.toFixed(2)}`;
+                    select.appendChild(option);
+                });
+
+                // Attach event listeners to the new form
+                attachNewOrderHandlers(orderElement);
+
+                // Replace the order card with the new form
+                card.parentNode.replaceChild(newOrderForm, card);
+                console.log('Order card replaced with editable form'); // Debugging statement
+            });
+        }
+
+        // Add event listener for default tax change
+        document.getElementById('defaultTax').addEventListener('change', function(e) {
+            defaultTaxRate = parseFloat(e.target.value);
+            // Update all existing order cards with new default tax
+            document.querySelectorAll('.order-card').forEach(card => {
+                const taxInput = card.querySelector('.tax-rate');
+                if (taxInput && !taxInput.value) {
+                    taxInput.value = defaultTaxRate;
+                    updateTotal(card);
+                }
+            });
+        });
+
+        // Function to reset the daily order count
+        function resetDailyOrderCount() {
+            dailyOrderCount = 0;
+            updateDailyCountDisplay();
+            saveDailyCount();
+        }
+
+        // Add event listener for the reset button
+        const resetButton = document.getElementById('resetOrderCount');
+        resetButton.addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset the order count?')) {
+                resetDailyOrderCount();
+            }
+        });
+
+        // Add search functionality
+        function setupSearch() {
+            const searchInput = document.getElementById('searchOrders');
+            let searchTimeout;
+
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                const searchTerm = e.target.value.toLowerCase().trim();
+
+                // Add a small delay to prevent too many re-renders
+                searchTimeout = setTimeout(() => {
+                    filterOrders(searchTerm);
+                }, 300);
+            });
+        }
+
+        function filterOrders(searchTerm) {
+            const orderCards = document.querySelectorAll('.order-card');
+            let hasVisibleCards = false;
+            
+            orderCards.forEach(card => {
+                const tableNumber = card.querySelector('.order-header h4')?.textContent.toLowerCase() || '';
+                const customerName = card.querySelector('.order-header p')?.textContent.toLowerCase() || '';
+                const tableInput = card.querySelector('.table-number')?.value.toLowerCase() || '';
+                const customerInput = card.querySelector('.customer-name')?.value.toLowerCase() || '';
+                
+                // Check both existing orders and new order forms
+                const matchesTable = tableNumber.includes(searchTerm) || tableInput.includes(searchTerm);
+                const matchesCustomer = customerName.includes(searchTerm) || customerInput.includes(searchTerm);
+                
+                if (searchTerm === '' || matchesTable || matchesCustomer) {
+                    card.style.display = 'block';
+                    hasVisibleCards = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show/hide the "No results found" message
+            const activeOrders = document.querySelector('.active-orders');
+            let noResultsMessage = document.querySelector('.no-results-message');
+            
+            if (!hasVisibleCards && searchTerm !== '') {
+                if (!noResultsMessage) {
+                    noResultsMessage = document.createElement('div');
+                    noResultsMessage.className = 'no-results-message';
+                    noResultsMessage.style.textAlign = 'center';
+                    noResultsMessage.style.padding = '2rem';
+                    noResultsMessage.style.color = '#666';
+                    noResultsMessage.style.fontSize = '1.1rem';
+                    noResultsMessage.innerHTML = 'No orders found matching your search.';
+                    activeOrders.appendChild(noResultsMessage);
+                }
+            } else if (noResultsMessage) {
+                noResultsMessage.remove();
+            }
+        }
+
+        // Initialize page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initialize);
+    </script>
+</body>
+</html>

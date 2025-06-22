@@ -1,0 +1,27 @@
+{
+  "name": "records-restaurant-management",
+  "version": "1.0.0",
+  "description": "Restaurant Management System",
+  "scripts": {
+    "start": "npm run dev",
+    "server": "cd backend && npm start",
+    "client": "cd frontend && npx http-server -p 3000 -c-1",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "install-all": "npm install && cd backend && npm install",
+    "backend": "npm run server",
+    "frontend": "npm run client"
+  },
+  "keywords": [
+    "restaurant",
+    "management",
+    "orders",
+    "menu"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2",
+    "dotenv": "^16.4.7",
+    "http-server": "^14.1.1"
+  }
+}

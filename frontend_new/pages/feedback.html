@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Feedback | RECORDS - Restaurant Management</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .feedback-form {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .rating-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .star-rating {
+            display: flex;
+            gap: 0.25rem;
+        }
+        
+        .star {
+            font-size: 1.5rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .star.active,
+        .star:hover {
+            color: #ffc107;
+        }
+        
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .submit-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="header-left">
+            <a href="dashboard.html" class="header-brand">🍽️ RECORDS</a>
+            <nav class="header-nav">
+                <a href="dashboard.html" class="header-nav-item">Dashboard</a>
+                <a href="orders.html" class="header-nav-item">Orders</a>
+                <a href="menu.html" class="header-nav-item">Menu</a>
+                <a href="tables.html" class="header-nav-item">Tables</a>
+                <a href="history.html" class="header-nav-item">History</a>
+                <a href="feedback.html" class="header-nav-item active">Feedback</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="header-search">
+                <input type="text" placeholder="Search feedback...">
+                <span class="header-search-icon">🔍</span>
+            </div>
+            <div class="header-actions">
+                <a href="orders.html" class="header-btn">
+                    <span>📋</span> New Order
+                </a>
+                <div class="header-notifications">
+                    <button class="header-btn">🔔</button>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="header-profile" onclick="window.location.href='profile.html'">
+                    <img src="../assets/profile.jpg" alt="Profile" class="header-profile-img">
+                    <div class="header-profile-info">
+                        <div class="header-profile-name">Aalok Nikam</div>
+                        <div class="header-profile-role">Restaurant Manager</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="sidebar"></div>
+        <main class="main-content">
+            <header>
+                <div>
+                    <h2>💬 Customer Feedback</h2>
+                    <p>We value your feedback to improve our restaurant service</p>
+                </div>
+            </header>
+            
+            <div class="feedback-form">
+                <form id="feedbackForm">
+                    <div class="form-group">
+                        <label for="customerName">Customer Name *</label>
+                        <input type="text" id="customerName" name="customerName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rating">Rating *</label>
+                        <div class="rating-group">
+                            <div class="star-rating" id="starRating">
+                                <span class="star" data-rating="1">★</span>
+                                <span class="star" data-rating="2">★</span>
+                                <span class="star" data-rating="3">★</span>
+                                <span class="star" data-rating="4">★</span>
+                                <span class="star" data-rating="5">★</span>
+                            </div>
+                            <span id="ratingText">Click to rate</span>
+                        </div>
+                        <input type="hidden" id="rating" name="rating" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comment">Comments *</label>
+                        <textarea id="comment" name="comment" placeholder="Please share your experience..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="orderId">Order ID (Optional)</label>
+                        <input type="text" id="orderId" name="orderId" placeholder="Enter order ID if applicable">
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Submit Feedback</button>
+                </form>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Load scripts in correct order -->
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/scripts.js"></script>
+    
+    <script>
+        // Load sidebar and handle navigation
+        async function loadSidebar() {
+            try {
+                const response = await fetch('../components/sidebar.html');
+                const sidebarContent = await response.text();
+                document.getElementById('sidebar').innerHTML = sidebarContent;
+
+                // Initialize sidebar functionality
+                initializeSidebar();
+
+                // Set active navigation item
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(item => {
+                    if (item.getAttribute('href') === 'feedback.html') {
+                        item.classList.add('active');
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading sidebar:', error);
+            }
+        }
+
+        // Initialize sidebar functionality (same as other pages)
+        function initializeSidebar() {
+            // Initialize sidebar popup functionality
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(navItem => {
+                const popup = navItem.parentElement.querySelector('.sidebar-popup');
+                if (!popup) return;
+                
+                navItem.addEventListener('mouseenter', function(e) {
+                    const rect = navItem.getBoundingClientRect();
+                    popup.style.top = rect.top + 'px';
+                    popup.classList.add('show');
+                });
+                
+                navItem.addEventListener('mouseleave', function() {
+                    popup.classList.remove('show');
+                });
+            });
+            
+            console.log('Sidebar initialized with popup navigation');
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('show-mobile');
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Load sidebar first
+            await loadSidebar();
+            // Star rating functionality
+            const stars = document.querySelectorAll('.star');
+            const ratingInput = document.getElementById('rating');
+            const ratingText = document.getElementById('ratingText');
+            let currentRating = 0;
+            
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    currentRating = parseInt(this.dataset.rating);
+                    ratingInput.value = currentRating;
+                    updateStarDisplay();
+                    updateRatingText();
+                });
+                
+                star.addEventListener('mouseover', function() {
+                    const hoverRating = parseInt(this.dataset.rating);
+                    highlightStars(hoverRating);
+                });
+            });
+            
+            document.getElementById('starRating').addEventListener('mouseleave', function() {
+                updateStarDisplay();
+            });
+            
+            function updateStarDisplay() {
+                stars.forEach((star, index) => {
+                    if (index < currentRating) {
+                        star.classList.add('active');
+                    } else {
+                        star.classList.remove('active');
+                    }
+                });
+            }
+            
+            function highlightStars(rating) {
+                stars.forEach((star, index) => {
+                    if (index < rating) {
+                        star.classList.add('active');
+                    } else {
+                        star.classList.remove('active');
+                    }
+                });
+            }
+            
+            function updateRatingText() {
+                const ratingTexts = {
+                    1: 'Poor',
+                    2: 'Fair',
+                    3: 'Good',
+                    4: 'Very Good',
+                    5: 'Excellent'
+                };
+                ratingText.textContent = ratingTexts[currentRating] || 'Click to rate';
+            }
+            
+            // Form submission
+            document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const submitBtn = document.querySelector('.submit-btn');
+                const originalText = submitBtn.textContent;
+                
+                try {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Submitting...';
+                    
+                    const formData = new FormData(this);
+                    const feedbackData = {
+                        customerName: formData.get('customerName'),
+                        rating: parseInt(formData.get('rating')),
+                        comment: formData.get('comment'),
+                        orderId: formData.get('orderId') || null
+                    };
+                    
+                    if (!feedbackData.rating) {
+                        throw new Error('Please select a rating');
+                    }
+                    
+                    await window.api.submitFeedback(feedbackData);
+                    
+                    showNotification('Thank you for your feedback!', 'success');
+                    
+                    // Reset form
+                    this.reset();
+                    currentRating = 0;
+                    updateStarDisplay();
+                    updateRatingText();
+                    
+                } catch (error) {
+                    console.error('Error submitting feedback:', error);
+                    showNotification('Failed to submit feedback. Please try again.', 'error');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

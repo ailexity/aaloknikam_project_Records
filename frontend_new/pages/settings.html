@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | RECORDS - Restaurant Management</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .settings-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .settings-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .settings-section h3 {
+            color: #007bff;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .setting-item:hover {
+            background-color: #f8f9fa;
+            margin: 0 -1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            border-radius: 8px;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            flex: 1;
+            margin-right: 1rem;
+        }
+
+        .setting-info h4 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .setting-info p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .setting-control {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 54px;
+            height: 28px;
+            background-color: #ccc;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .toggle-switch.active {
+            background-color: #007bff;
+        }
+
+        .toggle-switch:hover {
+            border-color: #007bff;
+        }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: white;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active::before {
+            transform: translateX(26px);
+        }
+
+        .setting-input, .setting-select {
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .setting-input:focus, .setting-select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .setting-input {
+            width: 140px;
+        }
+
+        .setting-select {
+            width: 160px;
+        }
+
+        .btn-save, .btn-reset, .btn-danger {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+            margin-left: 1rem;
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+        }
+
+        .settings-actions {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .danger-zone {
+            border: 2px solid #dc3545;
+            border-radius: 12px;
+            padding: 2rem;
+            background: linear-gradient(135deg, #fff5f5, #ffe6e6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .danger-zone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #dc3545, #ff6b7a, #dc3545);
+            animation: dangerPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes dangerPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .danger-zone h4 {
+            color: #dc3545;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .setting-control {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="header-left">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+            <a href="dashboard.html" class="header-brand">🍽️ RECORDS</a>
+            <nav class="header-nav">
+                <a href="dashboard.html" class="header-nav-item">Dashboard</a>
+                <a href="orders.html" class="header-nav-item">Orders</a>
+                <a href="menu.html" class="header-nav-item">Menu</a>
+                <a href="history.html" class="header-nav-item">History</a>
+                <a href="feedback.html" class="header-nav-item">Feedback</a>
+                <a href="settings.html" class="header-nav-item active">Settings</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="header-search">
+                <input type="text" placeholder="Search settings...">
+                <span class="header-search-icon">🔍</span>
+            </div>
+            <div class="header-actions">
+                <a href="orders.html" class="header-btn">
+                    <span>📋</span> New Order
+                </a>
+                <div class="header-notifications">
+                    <button class="header-btn">🔔</button>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="header-profile" onclick="window.location.href='profile.html'">
+                    <img src="../assets/profile.jpg" alt="Profile" class="header-profile-img">
+                    <div class="header-profile-info">
+                        <div class="header-profile-name">Aalok Nikam</div>
+                        <div class="header-profile-role">Restaurant Manager</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="sidebar"></div>
+        <main class="main-content">
+            <header>
+                <div>
+                    <h2>⚙️ Settings</h2>
+                    <p>Configure your restaurant management system preferences</p>
+                </div>
+            </header>
+
+            <div class="settings-container">
+                <!-- Restaurant Information -->
+                <div class="settings-section">
+                    <h3>🏪 Restaurant Information</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Restaurant Name</h4>
+                            <p>The name displayed throughout the system and on receipts</p>
+                        </div>
+                        <div class="setting-control">
+                            <input type="text" class="setting-input" id="restaurantName" value="My Restaurant" style="width: 200px;">
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Address</h4>
+                            <p>Restaurant's physical address for delivery and contact</p>
+                        </div>
+                        <div class="setting-control">
+                            <input type="text" class="setting-input" id="restaurantAddress" value="123 Food Street, City" style="width: 250px;">
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Phone Number</h4>
+                            <p>Contact number for customer inquiries</p>
+                        </div>
+                        <div class="setting-control">
+                            <input type="tel" class="setting-input" id="restaurantPhone" value="+1 (555) 123-4567" style="width: 180px;">
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Email</h4>
+                            <p>Primary email for business communications</p>
+                        </div>
+                        <div class="setting-control">
+                            <input type="email" class="setting-input" id="restaurantEmail" value="info@myrestaurant.com" style="width: 200px;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Settings -->
+                <div class="settings-section">
+                    <h3>💰 Financial Settings</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Default Tax Rate</h4>
+                            <p>Default tax percentage applied to new orders</p>
+                        </div>
+                        <div class="setting-control">
+                            <input type="number" class="setting-input" id="defaultTax" value="10" min="0" max="100" step="0.1">
+                            <span>%</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Service Charge</h4>
+                            <p>Optional service charge percentage</p>
+                        </div>
+                        <div class="setting-control">
+                            <input type="number" class="setting-input" id="serviceCharge" value="0" min="0" max="50" step="0.1">
+                            <span>%</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Currency</h4>
+                            <p>Currency symbol and format for all prices</p>
+                        </div>
+                        <div class="setting-control">
+                            <select class="setting-select" id="currency">
+                                <option value="$">USD ($)</option>
+                                <option value="€">EUR (€)</option>
+                                <option value="£">GBP (£)</option>
+                                <option value="₹">INR (₹)</option>
+                                <option value="¥">JPY (¥)</option>
+                                <option value="C$">CAD (C$)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Minimum Order Amount</h4>
+                            <p>Minimum order value for processing</p>
+                        </div>
+                        <div class="setting-control">
+                            <input type="number" class="setting-input" id="minOrderAmount" value="5.00" min="0" step="0.50">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Management -->
+                <div class="settings-section">
+                    <h3>🛎️ Order Management</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Auto-refresh Orders</h4>
+                            <p>Automatically refresh active orders every 30 seconds</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch active" id="autoRefresh"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Order Notifications</h4>
+                            <p>Show desktop notifications for new orders</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch active" id="orderNotifications"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Order Timeout Alert</h4>
+                            <p>Alert when orders exceed preparation time (minutes)</p>
+                        </div>
+                        <div class="setting-control">
+                            <input type="number" class="setting-input" id="orderTimeout" value="30" min="5" max="120">
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Auto-assign Table Numbers</h4>
+                            <p>Automatically assign table numbers to new orders</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch" id="autoAssignTables"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Order Sound Effects</h4>
+                            <p>Play sound when new orders are received</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch active" id="orderSounds"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kitchen Settings -->
+                <div class="settings-section">
+                    <h3>👨‍🍳 Kitchen Settings</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Kitchen Display Mode</h4>
+                            <p>How orders are displayed in the kitchen</p>
+                        </div>
+                        <div class="setting-control">
+                            <select class="setting-select" id="kitchenDisplay">
+                                <option value="grid">Grid View</option>
+                                <option value="list">List View</option>
+                                <option value="priority">Priority Queue</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Preparation Time Tracking</h4>
+                            <p>Track and display order preparation times</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch active" id="prepTimeTracking"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Ingredient Alerts</h4>
+                            <p>Alert when ingredient stock is low</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch active" id="ingredientAlerts"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Display & Interface -->
+                <div class="settings-section">
+                    <h3>🎨 Display & Interface</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Theme</h4>
+                            <p>Choose your preferred color theme</p>
+                        </div>
+                        <div class="setting-control">
+                            <select class="setting-select" id="theme">
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                                <option value="auto">Auto (System)</option>
+                                <option value="blue">Ocean Blue</option>
+                                <option value="green">Forest Green</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Compact Mode</h4>
+                            <p>Use smaller cards and reduced spacing to fit more content</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch" id="compactMode"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Animations</h4>
+                            <p>Enable smooth animations and transitions</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch active" id="showAnimations"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Font Size</h4>
+                            <p>Adjust text size for better readability</p>
+                        </div>
+                        <div class="setting-control">
+                            <select class="setting-select" id="fontSize">
+                                <option value="small">Small</option>
+                                <option value="normal" selected>Normal</option>
+                                <option value="large">Large</option>
+                                <option value="extra-large">Extra Large</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>High Contrast Mode</h4>
+                            <p>Increase contrast for better visibility</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch" id="highContrast"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports & Analytics -->
+                <div class="settings-section">
+                    <h3>📊 Reports & Analytics</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Auto-generate Daily Reports</h4>
+                            <p>Automatically create daily sales and performance reports</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch active" id="autoReports"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Report Email Recipients</h4>
+                            <p>Email addresses to receive daily reports (comma-separated)</p>
+                        </div>
+                        <div class="setting-control">
+                            <input type="text" class="setting-input" id="reportEmails" value="manager@myrestaurant.com" style="width: 250px;">
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Analytics Tracking</h4>
+                            <p>Track customer behavior and sales patterns</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch active" id="analyticsTracking"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backup & Security -->
+                <div class="settings-section">
+                    <h3>🔒 Backup & Security</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Auto Backup</h4>
+                            <p>Automatically backup data daily at 2:00 AM</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch active" id="autoBackup"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Backup Frequency</h4>
+                            <p>How often to create automatic backups</p>
+                        </div>
+                        <div class="setting-control">
+                            <select class="setting-select" id="backupFrequency">
+                                <option value="daily" selected>Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Session Timeout</h4>
+                            <p>Auto-logout after inactivity (minutes)</p>
+                        </div>
+                        <div class="setting-control">
+                            <input type="number" class="setting-input" id="sessionTimeout" value="60" min="15" max="480">
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Export Data</h4>
+                            <p>Download all your restaurant data as JSON file</p>
+                        </div>
+                        <div class="setting-control">
+                            <button class="btn-save" onclick="exportData()">📥 Export</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Integrations -->
+                <div class="settings-section">
+                    <h3>🔗 Integrations</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Payment Gateway</h4>
+                            <p>Connect with payment processing services</p>
+                        </div>
+                        <div class="setting-control">
+                            <select class="setting-select" id="paymentGateway">
+                                <option value="none">None</option>
+                                <option value="stripe">Stripe</option>
+                                <option value="paypal">PayPal</option>
+                                <option value="square">Square</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>POS Integration</h4>
+                            <p>Sync with Point of Sale systems</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch" id="posIntegration"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Inventory Management</h4>
+                            <p>Connect with inventory tracking systems</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="toggle-switch" id="inventoryIntegration"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="settings-section">
+                    <div class="danger-zone">
+                        <h4>⚠️ Danger Zone</h4>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Reset All Settings</h4>
+                                <p>Reset all configuration to default values</p>
+                            </div>
+                            <div class="setting-control">
+                                <button class="btn-danger" onclick="resetAllSettings()">🔄 Reset Settings</button>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Clear All Data</h4>
+                                <p>Permanently delete all orders, menu items, and history</p>
+                            </div>
+                            <div class="setting-control">
+                                <button class="btn-danger" onclick="clearAllData()">🗑️ Clear Data</button>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Factory Reset</h4>
+                                <p>Reset everything to initial installation state</p>
+                            </div>
+                            <div class="setting-control">
+                                <button class="btn-danger" onclick="factoryReset()">⚡ Factory Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Actions -->
+                <div class="settings-actions">
+                    <button class="btn-save" onclick="saveSettings()">💾 Save All Settings</button>
+                    <button class="btn-reset" onclick="loadSettings()">🔄 Reload Settings</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/scripts.js"></script>
+
+    <script>
+        async function loadSidebar() {
+            try {
+                const response = await fetch('../components/sidebar.html');
+                const sidebarContent = await response.text();
+                document.getElementById('sidebar').innerHTML = sidebarContent;
+                initializeSidebar();
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(item => {
+                    if (item.getAttribute('href') === 'settings.html') {
+                        item.classList.add('active');
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading sidebar:', error);
+            }
+        }
+
+        function initializeSidebar() {
+            // Initialize sidebar popup functionality
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(navItem => {
+                const popup = navItem.parentElement.querySelector('.sidebar-popup');
+                if (!popup) return;
+                
+                navItem.addEventListener('mouseenter', function(e) {
+                    const rect = navItem.getBoundingClientRect();
+                    popup.style.top = rect.top + 'px';
+                    popup.classList.add('show');
+                });
+                
+                navItem.addEventListener('mouseleave', function() {
+                    popup.classList.remove('show');
+                });
+            });
+            
+            console.log('Sidebar initialized with popup navigation');
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('show-mobile');
+        }
+
+        // Settings functionality
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadSidebar();
+            loadSettings();
+            initializeToggleSwitches();
+        });
+
+        function initializeToggleSwitches() {
+            document.querySelectorAll('.toggle-switch').forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+        }
+
+        function saveSettings() {
+            const settings = {
+                restaurantName: document.getElementById('restaurantName').value,
+                restaurantAddress: document.getElementById('restaurantAddress').value,
+                restaurantPhone: document.getElementById('restaurantPhone').value,
+                restaurantEmail: document.getElementById('restaurantEmail').value,
+                defaultTax: parseFloat(document.getElementById('defaultTax').value),
+                serviceCharge: parseFloat(document.getElementById('serviceCharge').value),
+                currency: document.getElementById('currency').value,
+                minOrderAmount: parseFloat(document.getElementById('minOrderAmount').value),
+                autoRefresh: document.getElementById('autoRefresh').classList.contains('active'),
+                orderNotifications: document.getElementById('orderNotifications').classList.contains('active'),
+                orderTimeout: parseInt(document.getElementById('orderTimeout').value),
+                autoAssignTables: document.getElementById('autoAssignTables').classList.contains('active'),
+                orderSounds: document.getElementById('orderSounds').classList.contains('active'),
+                kitchenDisplay: document.getElementById('kitchenDisplay').value,
+                prepTimeTracking: document.getElementById('prepTimeTracking').classList.contains('active'),
+                ingredientAlerts: document.getElementById('ingredientAlerts').classList.contains('active'),
+                theme: document.getElementById('theme').value,
+                compactMode: document.getElementById('compactMode').classList.contains('active'),
+                showAnimations: document.getElementById('showAnimations').classList.contains('active'),
+                fontSize: document.getElementById('fontSize').value,
+                highContrast: document.getElementById('highContrast').classList.contains('active'),
+                autoReports: document.getElementById('autoReports').classList.contains('active'),
+                reportEmails: document.getElementById('reportEmails').value,
+                analyticsTracking: document.getElementById('analyticsTracking').classList.contains('active'),
+                autoBackup: document.getElementById('autoBackup').classList.contains('active'),
+                backupFrequency: document.getElementById('backupFrequency').value,
+                sessionTimeout: parseInt(document.getElementById('sessionTimeout').value),
+                paymentGateway: document.getElementById('paymentGateway').value,
+                posIntegration: document.getElementById('posIntegration').classList.contains('active'),
+                inventoryIntegration: document.getElementById('inventoryIntegration').classList.contains('active')
+            };
+
+            localStorage.setItem('restaurantSettings', JSON.stringify(settings));
+            showNotification('Settings saved successfully!', 'success');
+        }
+
+        function loadSettings() {
+            const defaultSettings = {
+                                 restaurantName: 'My Restaurant',
+                restaurantAddress: '123 Food Street, City',
+                restaurantPhone: '+1 (555) 123-4567',
+                                 restaurantEmail: 'info@myrestaurant.com',
+                defaultTax: 10,
+                serviceCharge: 0,
+                currency: '$',
+                minOrderAmount: 5.00,
+                autoRefresh: true,
+                orderNotifications: true,
+                orderTimeout: 30,
+                autoAssignTables: false,
+                orderSounds: true,
+                kitchenDisplay: 'grid',
+                prepTimeTracking: true,
+                ingredientAlerts: true,
+                theme: 'light',
+                compactMode: false,
+                showAnimations: true,
+                fontSize: 'normal',
+                highContrast: false,
+                autoReports: true,
+                                 reportEmails: 'manager@myrestaurant.com',
+                analyticsTracking: true,
+                autoBackup: true,
+                backupFrequency: 'daily',
+                sessionTimeout: 60,
+                paymentGateway: 'none',
+                posIntegration: false,
+                inventoryIntegration: false
+            };
+
+            const settings = JSON.parse(localStorage.getItem('restaurantSettings')) || defaultSettings;
+
+            // Set text inputs
+            document.getElementById('restaurantName').value = settings.restaurantName;
+            document.getElementById('restaurantAddress').value = settings.restaurantAddress;
+            document.getElementById('restaurantPhone').value = settings.restaurantPhone;
+            document.getElementById('restaurantEmail').value = settings.restaurantEmail;
+            document.getElementById('defaultTax').value = settings.defaultTax;
+            document.getElementById('serviceCharge').value = settings.serviceCharge;
+            document.getElementById('minOrderAmount').value = settings.minOrderAmount;
+            document.getElementById('orderTimeout').value = settings.orderTimeout;
+            document.getElementById('reportEmails').value = settings.reportEmails;
+            document.getElementById('sessionTimeout').value = settings.sessionTimeout;
+
+            // Set select dropdowns
+            document.getElementById('currency').value = settings.currency;
+            document.getElementById('kitchenDisplay').value = settings.kitchenDisplay;
+            document.getElementById('theme').value = settings.theme;
+            document.getElementById('fontSize').value = settings.fontSize;
+            document.getElementById('backupFrequency').value = settings.backupFrequency;
+            document.getElementById('paymentGateway').value = settings.paymentGateway;
+
+            // Set toggle switches
+            setToggle('autoRefresh', settings.autoRefresh);
+            setToggle('orderNotifications', settings.orderNotifications);
+            setToggle('autoAssignTables', settings.autoAssignTables);
+            setToggle('orderSounds', settings.orderSounds);
+            setToggle('prepTimeTracking', settings.prepTimeTracking);
+            setToggle('ingredientAlerts', settings.ingredientAlerts);
+            setToggle('compactMode', settings.compactMode);
+            setToggle('showAnimations', settings.showAnimations);
+            setToggle('highContrast', settings.highContrast);
+            setToggle('autoReports', settings.autoReports);
+            setToggle('analyticsTracking', settings.analyticsTracking);
+            setToggle('autoBackup', settings.autoBackup);
+            setToggle('posIntegration', settings.posIntegration);
+            setToggle('inventoryIntegration', settings.inventoryIntegration);
+        }
+
+        function setToggle(id, active) {
+            const toggle = document.getElementById(id);
+            if (active) {
+                toggle.classList.add('active');
+            } else {
+                toggle.classList.remove('active');
+            }
+        }
+
+        function exportData() {
+            const data = {
+                settings: JSON.parse(localStorage.getItem('restaurantSettings') || '{}'),
+                orders: JSON.parse(localStorage.getItem('completedOrders') || '[]'),
+                menuItems: JSON.parse(localStorage.getItem('menuItems') || '[]'),
+                feedback: JSON.parse(localStorage.getItem('feedback') || '[]'),
+                exportDate: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `restaurant-data-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showNotification('Data exported successfully!', 'success');
+        }
+
+        function resetAllSettings() {
+            if (confirm('Are you sure you want to reset all settings to default values? This action cannot be undone.')) {
+                localStorage.removeItem('restaurantSettings');
+                loadSettings();
+                showNotification('Settings reset to defaults!', 'success');
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('⚠️ WARNING: This will permanently delete ALL your data including orders, menu items, and history. This action CANNOT be undone!\n\nAre you sure you want to continue?')) {
+                const confirmation = prompt('Type "DELETE" to confirm data deletion:');
+                if (confirmation === 'DELETE') {
+                    localStorage.clear();
+                    showNotification('All data has been cleared!', 'warning');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                } else {
+                    showNotification('Data deletion cancelled.', 'info');
+                }
+            }
+        }
+
+        function factoryReset() {
+            if (confirm('⚠️ FACTORY RESET: This will delete ALL data and reset ALL settings to factory defaults. This action CANNOT be undone!\n\nAre you absolutely sure?')) {
+                const confirmation = prompt('Type "FACTORY RESET" to confirm:');
+                if (confirmation === 'FACTORY RESET') {
+                    localStorage.clear();
+                    showNotification('Factory reset completed! Redirecting...', 'warning');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 3000);
+                } else {
+                    showNotification('Factory reset cancelled.', 'info');
+                }
+            }
+        }
+    </script>
+</body>
+</html> 

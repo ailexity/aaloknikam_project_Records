@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | RECORDS - Restaurant Management</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            margin: 0 auto 1rem;
+            object-fit: cover;
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-role {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .profile-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: #007bff;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .edit-profile-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .edit-profile-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: #f8f9fa;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .quick-action-btn {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quick-action-btn:hover {
+            border-color: #007bff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.1);
+        }
+
+        .quick-action-icon {
+            font-size: 2rem;
+            color: #007bff;
+        }
+
+        .quick-action-text {
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .profile-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="header-left">
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+            <a href="dashboard.html" class="header-brand">🍽️ RECORDS</a>
+            <nav class="header-nav">
+                <a href="dashboard.html" class="header-nav-item">Dashboard</a>
+                <a href="orders.html" class="header-nav-item">Orders</a>
+                <a href="menu.html" class="header-nav-item">Menu</a>
+                <a href="history.html" class="header-nav-item">History</a>
+                <a href="feedback.html" class="header-nav-item">Feedback</a>
+                <a href="settings.html" class="header-nav-item">Settings</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="header-search">
+                <input type="text" placeholder="Search...">
+                <span class="header-search-icon">🔍</span>
+            </div>
+            <div class="header-actions">
+                <a href="orders.html" class="header-btn">
+                    <span>📋</span> New Order
+                </a>
+                <div class="header-notifications">
+                    <button class="header-btn">🔔</button>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="header-profile" onclick="window.location.href='profile.html'">
+                    <img src="../assets/profile.jpg" alt="Profile" class="header-profile-img">
+                    <div class="header-profile-info">
+                        <div class="header-profile-name">Aalok Nikam</div>
+                        <div class="header-profile-role">Restaurant Manager</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="sidebar"></div>
+        <main class="main-content">
+            <header>
+                <div>
+                    <h2>👤 Profile</h2>
+                    <p>Manage your profile information and account settings</p>
+                </div>
+            </header>
+
+            <div class="profile-container">
+                <h3>User Profile</h3>
+                <p>Profile page is under construction...</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/scripts.js"></script>
+
+    <script>
+        async function loadSidebar() {
+            try {
+                const response = await fetch('../components/sidebar.html');
+                const sidebarContent = await response.text();
+                document.getElementById('sidebar').innerHTML = sidebarContent;
+                initializeSidebar();
+            } catch (error) {
+                console.error('Error loading sidebar:', error);
+            }
+        }
+
+        function initializeSidebar() {
+            // Initialize sidebar popup functionality
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(navItem => {
+                const popup = navItem.parentElement.querySelector('.sidebar-popup');
+                if (!popup) return;
+                
+                navItem.addEventListener('mouseenter', function(e) {
+                    const rect = navItem.getBoundingClientRect();
+                    popup.style.top = rect.top + 'px';
+                    popup.classList.add('show');
+                });
+                
+                navItem.addEventListener('mouseleave', function() {
+                    popup.classList.remove('show');
+                });
+            });
+            
+            console.log('Sidebar initialized with popup navigation');
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('show-mobile');
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadSidebar();
+        });
+    </script>
+</body>
+</html> 
